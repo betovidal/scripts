@@ -1,4 +1,27 @@
 #!/bin/bash
+# ask_for_permissions() {
+# }
+do_mount() {
+	for var in "$@"; do
+		echo "$var"
+	done
+}
+ask_for_permissions() {
+# !!!!!!! START OF INNER BLOCK (If I indent this, it breaks)
+echo "Enter sudo credentials"
+IFS= read -rs PASSWD
+sudo -k
+if sudo -lS &> /dev/null << EOF
+$PASSWD
+EOF
+then
+	echo "Permission granted"
+	do_mount $@
+else
+	echo 'Wrong password.'
+fi
+# !!!!!!! END OF INNER BLOCK (If I indent this, it breaks)
+}
 execute_command() {
 	cmd=$1
 	echo "Executing: \$$cmd"
@@ -8,25 +31,9 @@ if [ -z "$1" ]; then
 	execute_command "lsblk -o NAME,LABEL"
 	exit 1
 fi
-for var in "$@"; do
-	echo "$var"
-done
-if sudo -n true
-then
+if sudo -n true; then
 	echo "You have permissions"
+	do_mount $@
 else
-	echo "sorry, but did not want to bother you"
+	ask_for_permissions $@
 fi
-# CONF_FILE=$1
-# ROUTE="/etc/wpa_supplicant/wlp2s0-$CONF_FILE.conf"
-# if [ -f "$ROUTE" ]; then
-# 	echo "File exists"
-# else
-# 	echo "Missing configuration file: $ROUTE!"
-# 	exit 1
-# fi
-# sudo pkill wpa_supplicant;
-# sudo wpa_supplicant -B -c "$ROUTE" -i wlp2s0;
-# echo "Initializing dhclient"
-# sudo dhclient
-
