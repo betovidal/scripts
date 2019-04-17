@@ -34,6 +34,7 @@ do_mount() {
 		else
 			echo "Can't find specified disk."
 		fi
+		echo "- - - - - - - - - -"
 	done
 }
 ask_for_permissions() {
