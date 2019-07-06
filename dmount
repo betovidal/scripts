@@ -20,16 +20,16 @@ do_mount() {
 			echo "Label    : $LABEL"
 			echo "User     : $USER"
 			echo "Folder   : $FOLDER"
-			if [ ! -d $FOLDER ]; then
+			if [ ! -d "$FOLDER" ]; then
 				echo "Need to create directory."
-				sudo mkdir $FOLDER
+				sudo mkdir "$FOLDER"
 			else
 				echo "Directory exists."
 			fi
 			if [[ $(findmnt -M "$FOLDER") ]]; then
 				echo "Route is in use by another mount!"
 			else
-				sudo mount $ROUTE $FOLDER
+				sudo mount $ROUTE "$FOLDER"
 			fi
 		else
 			echo "Can't find specified disk."
