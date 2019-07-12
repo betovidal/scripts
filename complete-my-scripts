@@ -1,19 +1,20 @@
 #!/bin/bash
 
 _rdc_completions() {
-	COMPREPLY=()
+	# If there's already an argument after the command, do nothing
+	if [ "${#COMP_WORDS[@]}" != "2" ]; then
+		return
+	fi
 	filenames=""
 	is_first=1
 	for fileroute in ~/Remotes/*; do
 		filename=$(echo $fileroute | awk -F / '{ print $NF }')
-		if [ ! -z $is_first ]; then
+		if [ $is_first != 1 ]; then
 			filenames+=' '
 		fi
 		filenames+=$filename
 		is_first=0
 	done
-	echo $filenames
-	COMPREPLY=($(compgen -W $filenames "${COMP_WORDS[1]}"))
+	COMPREPLY=($(compgen -W "$filenames" "${COMP_WORDS[1]}"))
 }
-# _rdc_completions
 complete -F _rdc_completions rdc
